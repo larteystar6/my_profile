@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reign Hub — Books, Shoes & More | Shopping Cart & WhatsApp Checkout</title>
+  <style>
+    :root{--card:#fff;--bg:#f3f6fb;--text:#111;--muted:#666;--primary:#3b82f6;--success:#10b981}
+    body{font-family:Inter,system-ui,Arial;margin:0;background:}
+    #fireworks-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* Place it behind other content */
+    }
+    .container {
+        position: relative; z-index: 1;
+    }
+    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;border-bottom:1px solid #e3e8ef;padding-bottom:16px}
+    .header h1{margin:0;font-size:24px}
+    .header-actions{display:flex;gap:12px;align-items:center}
+    button{padding:8px 12px;border-radius:8px;border:1px solid #e3e8ef;background:#667eea;color:#fff;cursor:pointer;font-size:14px}
+    button:hover{opacity:0.9}
+    .badge{display:inline-block;background:#fff;color:#111;border-radius:999px;padding:2px 8px;margin-left:8px;font-weight:700;font-size:12px}
+    /* Link to Google Fonts for the media player */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+    @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+    .card{background:var(--card);border-radius:12px;overflow:hidden;border:1px solid #e3e8ef;display:flex;flex-direction:column;cursor:pointer;transition:all 0.2s}
+    .card:hover{box-shadow:0 8px 16px rgba(0,0,0,0.1);transform:translateY(-2px)}
+    .cover{height:200px;background:#ddd;overflow:hidden}
+    .cover img{width:100%;height:100%;object-fit:cover}
+    .content{padding:12px}
+    .title{font-weight:700;margin-bottom:6px;font-size:14px}
+    .meta{color:var(--muted);font-size:13px;margin-bottom:10px}
+    .price{font-weight:700;color:var(--primary);font-size:15px;margin-bottom:8px}
+    .add-btn{width:100%;padding:8px;border:none;background:var(--success);color:#fff;border-radius:6px;cursor:pointer;font-size:13px}
+    .add-btn:hover{background:#059669}
+    #cartPanel{position:fixed;right:12px;top:72px;width:360px;max-width:92vw;max-height:70vh;background:#fff;border-radius:12px;box-shadow:0 20px 50px rgba(2,6,23,0.2);overflow:auto;padding:12px;display:none;z-index:9999;color:#111}
+    #cartPanel h3{margin:0 0 12px;font-size:16px}
+    .cart-item{display:flex;gap:8px;padding:8px;border-bottom:1px solid #eee;align-items:flex-start}
+    .cart-item img{width:50px;height:65px;object-fit:cover;border-radius:6px;flex-shrink:0}
+    .cart-item .meta{flex:1;font-size:13px}
+    .cart-item .meta .title{font-weight:700;margin-bottom:4px}
+    .cart-item .meta .price{color:var(--muted);font-size:12px}
+    .cart-actions{display:flex;gap:4px;align-items:center;margin-top:4px}
+    .cart-actions button{padding:4px 6px;font-size:12px;background:#f3f6fb;color:#111;border:1px solid #e3e8ef;margin:0}
+    .cart-empty{padding:18px;text-align:center;color:#666;font-size:13px}
+    .cart-footer{padding:12px;border-top:1px solid #eee;display:flex;flex-direction:column;gap:10px}
+    .cart-total{display:flex;justify-content:space-between;font-weight:700;font-size:14px}
+    .phone-input{width:100%;padding:6px;border:1px solid #e3e8ef;border-radius:6px;font-size:13px;margin-bottom:6px;box-sizing:border-box}
+    .checkout-btn{width:100%;background:var(--success);color:#fff;border:none;padding:8px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;box-sizing:border-box}
+    .email-btn{background:#3b82f6;}
+    .checkout-btn:hover{background:#059669}
+    .status-msg{padding:8px;border-radius:6px;background:#f0f9ff;color:#0369a1;font-size:12px;margin-bottom:8px;text-align:center}
+    /* Toast notifications */
+    .toast{position:fixed;bottom:20px;right:20px;background:#111;color:#fff;padding:14px 20px;border-radius:8px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:slideInToast 0.3s ease-out,slideOutToast 0.3s ease-out 4.7s forwards;z-index:99999;max-width:300px}
+    @keyframes slideInToast{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes slideOutToast{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}
+    .toast.success{background:#10b981}
+    .toast.error{background:#ef4444}
+    .toast.info{background:#3b82f6}
+    .upload-panel{position:fixed;left:12px;top:72px;width:380px;max-width:92vw;max-height:90vh;background:#fff;border-radius:12px;box-shadow:0 20px 50px rgba(2,6,23,0.3);overflow:auto;padding:0;display:none;z-index:9998;border:2px solid #3b82f6}
+    .upload-panel.show{display:block}
+    .upload-content{padding:16px;color:#111}
+    .upload-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid #e3e8ef;padding-bottom:12px}
+    .upload-header h2{margin:0;font-size:16px}
+    .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#666;padding:0;width:24px;height:24px}
+    .close-btn:hover{color:#111}
+    .drop-zone{border:2px dashed #3b82f6;border-radius:8px;padding:32px 16px;text-align:center;cursor:pointer;background:#f0f9ff;transition:all 0.2s;margin-bottom:16px}
+    .drop-zone:hover{background:#e0f2fe;border-color:#0284c7}
+    .drop-zone.dragover{background:#dbeafe;border-color:#0284c7;box-shadow:0 0 12px rgba(59,130,246,0.3)}
+    .drop-icon{font-size:40px;margin-bottom:8px}
+    .drop-zone p{margin:0;font-size:13px;color:#666;line-height:1.4}
+    .preview-area{background:#f3f6fb;border-radius:8px;padding:12px;margin-bottom:16px;text-align:center}
+    .form-group{margin-bottom:12px}
+    .form-group label{display:block;font-weight:600;font-size:13px;margin-bottom:6px;color:#111}
+    .form-group input,.form-group select{width:100%;padding:8px;border:1px solid #e3e8ef;border-radius:6px;font-size:13px;box-sizing:border-box;font-family:inherit}
+    .form-group input:focus,.form-group select:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,0.1)}
+    .submit-btn{width:100%;padding:10px;background:#10b981;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:14px}
+    .submit-btn:hover{background:#059669}
+    /* Admin modal */
+    .admin-modal{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:10000}
+    .admin-modal.show{display:flex}
+    .admin-box{background:#fff;padding:18px;border-radius:10px;width:360px;max-width:92vw;box-shadow:0 12px 40px rgba(2,6,23,0.3)}
+    .admin-box h3{margin:0 0 8px;font-size:16px}
+    .admin-box p{margin:0 0 12px;color:#666;font-size:13px}
+    .admin-input{width:100%;padding:8px;border:1px solid #e3e8ef;border-radius:6px;margin-bottom:10px}
+    .admin-actions{display:flex;gap:8px;justify-content:flex-end}
+    .btn-secondary{background:#fff;color:#111;border:1px solid #e3e8ef}
+    /* Promo Panel Styles */
+    .promo-panel{position:fixed;right:12px;bottom:12px;width:420px;max-width:92vw;max-height:85vh;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);border-radius:16px;box-shadow:0 20px 60px rgba(102,126,234,0.4);overflow:hidden;z-index:9997;border:3px solid #fff; flex-direction:column; transform: translateY(100%) scale(0.8); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, visibility 0.4s;}
+    .promo-panel.show{transform: translateY(0) scale(1); opacity: 1; visibility: visible; display:flex;}
+    .promo-panel.closing { transform: translateY(50px) scale(0.9); opacity: 0; visibility: hidden; }
+
+    @keyframes slideIn{from{transform:translateY(450px);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    @keyframes shine{0%{background-position:200% center}100%{background-position:-200% center}}
+    .promo-header{background:linear-gradient(90deg, #f093fb 0%, #f5576c 100%);color:#fff;padding:16px;border-bottom:3px solid #fff;display:flex;justify-content:space-between;align-items:center;animation:shine 3s linear infinite; flex-shrink: 0;}
+    .promo-header h2{margin:0;font-size:18px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+    .promo-header .badge-promo{background:#fff;color:#f5576c;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;animation:pulse 2s ease-in-out infinite}
+    .promo-close{background:rgba(255,255,255,0.3);border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.2s}
+    .promo-close:hover{background:rgba(255,255,255,0.6)}
+    .promo-content{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .promo-item{background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.1);border-left:4px solid #f5576c;animation:slideInItem 0.4s ease-out;transition:all 0.2s}
+    .promo-item:hover{transform:translateX(4px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
+    .promo-item-img{width:60px;height:60px;border-radius:8px;object-fit:cover;border:2px solid #f093fb}
+    .promo-item-info{flex:1;min-width:0}
+    .promo-item-title{font-weight:700;font-size:13px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .promo-item-price{font-size:12px;color:#f5576c;font-weight:700}
+    .promo-item-actions{display:flex;gap:4px}
+    .promo-item-actions button{padding:6px 8px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s}
+    .promo-item-actions .edit-promo{background:#667eea;color:#fff}
+    .promo-item-actions .delete-promo{background:#ef4444;color:#fff}
+    .promo-footer{background:#fff;padding:12px;border-top:2px solid #f093fb;display:flex;gap:8px; flex-shrink: 0;}
+    .promo-footer button{flex:1;padding:10px;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:13px}
+    .promo-add-btn{background:linear-gradient(90deg, #f093fb 0%, #f5576c 100%);color:#fff}
+    .promo-add-btn:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(245,87,108,0.4)}
+    /* Promo Edit Modal */
+    .promo-edit-modal{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:10001}
+    .promo-edit-modal.show{display:flex;animation:fadeIn 0.3s ease-out}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideInItem { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    .promo-edit-box{background:#fff;padding:20px;border-radius:12px;width:380px;max-width:92vw;box-shadow:0 20px 60px rgba(0,0,0,0.3);border:3px solid #667eea}
+    .promo-edit-box h3{margin:0 0 12px;font-size:16px;color:#111}
+    .promo-edit-form{display:flex;flex-direction:column;gap:10px}
+    .promo-edit-form input{padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px}
+    .promo-edit-form input:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 2px rgba(102,126,234,0.1)}
+    .promo-edit-actions{display:flex;gap:8px;margin-top:8px}
+    .promo-edit-actions button{flex:1;padding:10px;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+    .promo-save-btn{background:#10b981;color:#fff}
+    .promo-cancel-btn{background:#e5e7eb;color:#111}
+    /* Animated Promo FAB */
+    #infoHubBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 56px; height: 56px;
+      background: linear-gradient(45deg, #06b6d4, #3b82f6);
+      border-radius: 50%;
+      border: 3px solid #fff;
+      color: #fff; font-size: 24px;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+      animation: fab-pulse 3s infinite ease-in-out;
+      z-index: 9996;
+    }
+    /* Info Hub Panel */
+    .info-hub-panel{position:fixed;left:12px;bottom:12px;width:320px;max-width:90vw;background:linear-gradient(135deg, #27272a, #18181b);color:#e4e4e7;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.4);overflow:hidden;z-index:9997;border:2px solid #3b82f6;display:flex;flex-direction:column;transform:translateY(100%) scale(0.9);opacity:0;visibility:hidden;transition:transform .4s cubic-bezier(.175,.885,.32,1.275),opacity .3s}
+    .info-hub-panel.show{transform:translateY(0) scale(1);opacity:1;visibility:visible}
+    .info-hub-header{padding:12px 16px;border-bottom:1px solid #3f3f46;display:flex;justify-content:space-between;align-items:center;background:rgba(59,130,246,0.1)}
+    .info-hub-header h2{margin:0;font-size:16px;font-weight:700;color:#fff}
+    .info-hub-close{background:0 0;border:0;color:#9ca3af;font-size:20px;cursor:pointer;padding:4px;transition:color .2s}
+    .info-hub-close:hover{color:#fff}
+    .info-hub-content{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .info-widget{background:rgba(255,255,255,0.05);padding:12px;border-radius:10px;text-align:center;border:1px solid #3f3f46}
+    .info-widget-value{font-size:24px;font-weight:700;color:#3b82f6;margin-bottom:4px}
+    .info-widget-label{font-size:12px;color:#a1a1aa}
+    .info-footer{padding:12px 16px;margin-top:auto;font-size:11px;text-align:center;color:#71717a;background:rgba(0,0,0,0.2)}
+
+    /* Animated Promo FAB */
+    #promoBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 64px; height: 64px;
+      background: linear-gradient(45deg, #f093fb, #f5576c, #ff9a44, #f093fb);
+      background-size: 400% 400%;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      color: #fff; font-size: 28px;
+      box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
+      animation: fab-pulse 2.5s infinite ease-in-out, fab-bg-pan 8s infinite linear;
+      z-index: 9996;
+    }
+    @keyframes fab-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    @keyframes fab-bg-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    /* Client buttons and animation */
+    #enterNameBtn, #enterNumberBtn, #payBtn{background:linear-gradient(90deg,#06b6d4,#3b82f6);border:none;color:#fff;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:700;transition:transform .18s ease,box-shadow .18s}
+    #enterNameBtn:hover, #enterNumberBtn:hover, #payBtn:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(59,130,246,0.18)}
+    .client-info{font-size:12px;color:#fff;background:rgba(0,0,0,0.08);padding:6px 8px;border-radius:8px}
+    .pulse{animation:pulse 1.6s infinite}
+
+    /* --- Styles for the Ultra Modern Media Player --- */
+    .media-player-modal {
+      position: fixed; left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(18, 18, 18, 0.8);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 10002; animation: fadeIn 0.3s ease-out;
+    }
+    .media-player-modal.show { display: flex; }
+    .media-player-container {
+      width: 100%; max-width: 800px; text-align: center;
+      background-color: #1e1e1e; color: #e0e0e0;
+      padding: 30px 40px; border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+    .media-player-container h2 { margin-top: 0; margin-bottom: 30px; font-weight: 700; }
+    .media-drop-zone {
+      border: 2px dashed #333; border-radius: 12px; padding: 40px;
+      cursor: pointer; transition: border-color 0.3s ease, background-color 0.3s ease;
+      background-color: #2a2a2a;
+    }
+    .media-drop-zone:hover, .media-drop-zone.drag-over {
+      border-color: #3498db; background-color: #333;
+    }
+    .media-drop-zone.drag-over { border-style: solid; }
+    .media-drop-zone-prompt {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 15px; pointer-events: none;
+    }
+    .media-drop-zone-prompt .icon { width: 50px; height: 50px; color: #3498db; }
+    .media-drop-zone-prompt span { font-size: 1.1rem; font-weight: 500; }
+    .media-drop-zone-prompt p { font-size: 0.9rem; color: #888; margin: 0; }
+    .video-audio-player {
+      width: 100%; max-height: 500px; border-radius: 12px;
+      margin-top: 20px; display: none; outline: none; background-color: #000;
+    }
+    .video-audio-player.active { display: block; }
+    .media-drop-zone.hidden { display: none; }
+    .media-player-close-btn {
+      position: absolute; top: 15px; right: 15px;
+      background: rgba(255,255,255,0.1); color: #fff;
+      border: none; border-radius: 50%;
+      width: 32px; height: 32px; font-size: 18px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background-color 0.2s;
+    }
+    .media-player-close-btn:hover { background: rgba(255,255,255,0.2); }
+    .reset-media-btn {
+      margin-top: 15px; background: #ef4444;
+    }
+
+    /* --- Video Showcase Panel --- */
+    .video-showcase-panel {
+      background: var(--card);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      padding: 16px;
+      border: 1px solid #e3e8ef;
+      display: none; /* Hidden by default */
+    }
+    .video-showcase-panel.visible { display: block; }
+    .video-showcase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e3e8ef;
+    }
+    .video-showcase-header h2 { margin: 0; font-size: 18px; }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    .video-item { background: #f3f6fb; border-radius: 8px; overflow: hidden; }
+    .video-item video { width: 100%; height: 150px; background: #000; display: block; }
+    .video-item-title { padding: 8px 10px; font-weight: 600; font-size: 13px; }
+    .video-item-actions { padding: 0 10px 10px; }
+    .video-item-actions button { background: #ef4444; font-size: 12px; padding: 6px 10px; }
+
+    /* --- Public Promo Showcase Panel --- */
+    .promo-showcase-panel {
+      background: linear-gradient(135deg, #fdf4ff 0%, #fff6f7 100%);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      padding: 16px;
+      border: 1px solid #fbcfe8;    }
+    .promo-showcase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #fbcfe8;
+    }
+    .promo-showcase-header h2 { margin: 0; font-size: 18px; color: #c026d3; }
+    .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+
+    /* --- Site Footer --- */
+    .site-footer {
+      background: #111827; /* Dark Blue/Gray */
+      color: #9ca3af;
+      padding: 48px 0 24px;
+      margin-top: 48px;
+      font-size: 14px;
+      border-top: 4px solid #3b82f6;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+    .footer-column h3 {
+      font-size: 16px;
+      color: #fff;
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .footer-column p { margin: 0 0 10px; line-height: 1.6; }
+    .footer-column ul { list-style: none; padding: 0; margin: 0; }
+    .footer-column ul li { margin-bottom: 8px; }
+    .footer-column a { color: #9ca3af; text-decoration: none; transition: color 0.2s; }
+    .footer-column a:hover { color: #fff; }
+    .social-links { display: flex; gap: 16px; }
+    .social-links a {
+      font-size: 24px;
+      color: #9ca3af;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .social-links a:hover { color: #fff; transform: scale(1.1); }
+    .footer-bottom {
+      border-top: 1px solid #374151;
+      padding-top: 24px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .footer-bottom p { margin: 0 0 8px; }
+    .footer-bottom a { color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <!-- Container for the fireworks effect -->
+  <div id="fireworks-container"></div>
+
+  <div class="container">
+    <header class="header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <!-- Inline logo SVG -->
+        <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+          <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="#667eea"/>
+                <stop offset="1" stop-color="#764ba2"/>
+              </linearGradient>
+            </defs>
+            <rect x="4" y="8" width="56" height="40" rx="6" fill="url(#g1)" />
+            <path d="M18 26h10v12H18z" fill="#fff" opacity="0.95"/>
+            <circle cx="44" cy="26" r="8" fill="#fff" opacity="0.9"/>
+          </svg>
+        </div>
+        <h1 style="margin:0">🏪 Reign Hub — Books, Shoes & More</h1>
+      </div>
+      <div class="header-actions">
+        <button id="uploadBtn">📤 Add Product</button>
+        <button id="manageBtn">🧰 Manage</button>
+        <button id="manageVideosBtn">🎬 Manage Videos</button>
+        <button id="exportBtn">📥 Export Data</button>
+        <button id="changePassBtn">🔒 Change Pass</button>
+        <button id="cartBtn">🛒 Cart <span class="badge" id="cartCount">0</span></button>
+      </div>
+    </header>
+
+    <!-- Video Showcase Panel -->
+    <div id="videoShowcasePanel" class="video-showcase-panel">
+      <div class="video-showcase-header">
+        <h2>Featured Videos</h2>
+      </div>
+      <div id="videoGrid" class="video-grid"></div>
+    </div>
+
+    <!-- Public Promo Showcase Panel -->
+    <div id="promoShowcasePanel" class="promo-showcase-panel">
+      <div class="promo-showcase-header">
+        <h2>🎉 Special Promotions</h2>
+      </div>
+      <div id="promoGrid" class="promo-grid"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <!-- Final Website Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h3>About Reign Hub</h3>
+          <p>Your one-stop shop for the best books, shoes, and educational materials. We are dedicated to providing quality products with exceptional customer service and fast delivery across Ghana.</p>
+        </div>
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#grid">All Products</a></li>
+            <li><a href="#promoShowcasePanel">Promotions</a></li>
+            <li><a href="#" onclick="document.getElementById('cartBtn').click()">View Cart</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contact Us</h3>
+          <p>
+            📍 capital school junction,Abesim,Sunyani,Ghana<br>
+            � +233 0596334488<br>
+            � support@reignhub-demo.com
+          </p>
+        </div>
+        <div class="footer-column">
+          <h3>Follow Us</h3>
+          <div class="social-links">
+            <a href="#" title="Facebook">📘</a> <a href="#" title="Instagram">📸</a> <a href="#" title="Twitter / X">🐦</a> <a href="#" title="WhatsApp">💬</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>©  Reign Hub — Books, Shoes & More. All Rights Reserved.</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Upload Panel -->
+  <div id="uploadPanel" class="upload-panel">
+    <div class="upload-content">
+      <div class="upload-header">
+        <h2>➕ Add New Product</h2>
+        <button class="close-btn" onclick="toggleUploadPanel()">✕</button>
+      </div>
+      <div id="dropZone" class="drop-zone">
+        <div class="drop-icon">📸</div>
+        <p>Drag & drop image here or <span style="color:#3b82f6;cursor:pointer" onclick="document.getElementById('fileInput').click()">click to select</span></p>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+      </div>
+      <div id="preview" class="preview-area" style="display:none">
+        <img id="previewImg" src="" alt="Preview" style="max-width:100%;max-height:200px;border-radius:8px;margin-bottom:12px">
+        <button onclick="clearImage()" style="width:100%;padding:8px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer">Clear Image</button>
+      </div>
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" id="productName" placeholder="e.g., Red Running Shoes" maxlength="60">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="productCategory">
+          <option value="Books">Books</option>
+          <option value="Shoes">Shoes</option>
+          <option value="School Supplies">School Supplies</option>
+          <option value="Christmas Items">Christmas Items</option>
+          <option value="Story Books">Story Books</option>
+          <option value="Kids Games">Kids Games</option>
+          <option value="Posters & Colors">Posters & Colors</option>
+          <option value="Kids Handbags">Kids Handbags</option>
+          <option value="Diary Books">Diary Books</option>
+          <option value="Kids Cars">Kids Cars</option>
+          <option value="Kids Dresses">Kids Dresses</option>
+          <option value="Custom">Custom</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Price (GHS) *</label>
+        <input type="number" id="productPrice" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" id="productDesc" placeholder="e.g., Quality, Premium, Best Seller" maxlength="50">
+      </div>
+      <button onclick="addCustomProduct()" class="submit-btn">✅ Add to Store</button>
+    </div>
+  </div>
+
+  <!-- Admin Password Modal -->
+  <div id="adminModal" class="admin-modal" aria-hidden="true">
+    <div class="admin-box">
+      <h3>Admin Access</h3>
+      <p id="adminNote">Enter admin password to add products. If no password is set, you'll create one.</p>
+      <input id="adminPassInput" class="admin-input" type="password" placeholder="Admin password">
+      <div class="admin-actions">
+        <button id="adminCancel" class="btn-secondary">Cancel</button>
+        <button id="adminSubmit" class="submit-btn">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remove / Manage Panel -->
+  <div id="removePanel" class="upload-panel">
+    <div class="upload-content">
+      <div class="upload-header">
+        <h2>🗑️ Manage Products</h2>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button onclick="removeAllProducts()" style="background:#ef4444;color:#fff;border:none;padding:6px 10px;font-size:12px;border-radius:6px;cursor:pointer;">Delete All</button>
+          <button class="close-btn" onclick="toggleRemovePanel()">✕</button>
+        </div>
+      </div>
+      <div id="removeList" style="max-height:60vh;overflow:auto;padding-top: 8px;"></div>
+    </div>
+  </div>
+
+  <!-- Export Data Panel (admin-only) -->
+  <div id="exportPanel" class="upload-panel">
+    <div class="upload-content">
+      <div class="upload-header">
+        <h2>📥 Export Stored Data</h2>
+        <button class="close-btn" onclick="toggleExportPanel()">✕</button>
+      </div>
+      <div style="margin-bottom:12px;color:#666;font-size:13px">This shows sensitive site data stored in your browser. Only share it with trusted parties.</div>
+      <textarea id="exportArea" style="width:100%;height:260px;border:1px solid #e3e8ef;border-radius:6px;padding:8px;box-sizing:border-box;font-family:monospace;font-size:12px;white-space:pre-wrap;overflow:auto"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button id="copyExportBtn" class="submit-btn" style="flex:1">Copy JSON</button>
+        <button onclick="downloadExport()" style="padding:10px;border-radius:6px;border:1px solid #e3e8ef;background:#fff;cursor:pointer">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Panel -->
+  <div id="cartPanel"></div>
+
+  <!-- Client Name Modal -->
+  <div id="nameModal" class="admin-modal" aria-hidden="true">
+    <div class="admin-box">
+      <h3>Enter Your Name</h3>
+      <p id="nameNote">This name will be included in WhatsApp orders.</p>
+      <input id="clientNameInput" class="admin-input" type="text" placeholder="Your full name">
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn-secondary" onclick="hideNameModal()">Cancel</button>
+        <button class="submit-btn" onclick="saveClientName()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Number Modal -->
+  <div id="numberModal" class="admin-modal" aria-hidden="true">
+    <div class="admin-box">
+      <h3>Enter Your WhatsApp Number</h3>
+      <p id="numberNote">We'll use this number for checkout messages.</p>
+      <input id="clientNumberInput" class="admin-input" type="tel" placeholder="e.g., +233XXXXXXXXX">
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn-secondary" onclick="hideNumberModal()">Cancel</button>
+        <button class="submit-btn" onclick="saveClientNumber()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agreement Modal (client-only) -->
+  <div id="agreementModal" class="admin-modal" aria-hidden="true">
+    <div class="admin-box" style="max-width:720px">
+      <h3>Customer Agreement — Mobile Money Payment</h3>
+      <div style="max-height:320px;overflow:auto;margin-bottom:10px;color:#333;font-size:13px">
+        <p>Please read the agreement. By accepting, you authorize payment via Mobile Money (MoMo) and agree to the terms and fees described.</p>
+        <ul>
+          <li>Payment will be processed via MoMo.</li>
+          <li>Orders are confirmed after successful payment.</li>
+          <li>Contact support if you have questions.</li>
+        </ul>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-secondary" onclick="closeAgreementModal()">Cancel</button>
+        <button class="submit-btn" onclick="acceptAgreement()">I Agree & Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shipping Information Modal -->
+  <div id="shippingModal" class="admin-modal" aria-hidden="true">
+    <div class="admin-box" style="max-width: 420px;">
+      <h3>🚚 Shipping Information</h3>
+      <p>Please provide your delivery details to proceed.</p>
+      <div class="form-group" style="margin-bottom: 10px;">
+        <label for="shippingName">Full Name</label>
+        <input id="shippingName" class="admin-input" type="text" placeholder="e.g., Ama Asare">
+      </div>
+      <div class="form-group" style="margin-bottom: 10px;">
+        <label for="shippingPhone">WhatsApp Number</label>
+        <input id="shippingPhone" class="admin-input" type="tel" placeholder="e.g., +233596334488">
+      </div>
+      <div class="form-group" style="margin-bottom: 10px;">
+        <label for="shippingAddress">Delivery Address / Location</label>
+        <input id="shippingAddress" class="admin-input" type="text" placeholder="e.g., House No. 1, Sunyani">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+        <button class="btn-secondary" onclick="hideShippingModal()">Cancel</button>
+        <button class="submit-btn" onclick="proceedToPaymentStep()">Next: Payment →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Billing and Payment Modal -->
+  <div id="paymentModal" class="admin-modal" aria-hidden="true">
+    <div class="admin-box" style="max-width: 450px;">
+      <h3>💳 Billing & Payment</h3>
+      <p>Confirm your billing details and select a payment method.</p>
+      
+      <div class="form-group" style="margin-bottom: 10px;">
+        <label style="display:flex; align-items:center; gap: 8px;">
+          <input type="checkbox" id="billingSameAsShipping" onchange="toggleBillingAddress()" checked>
+          Billing address is same as shipping
+        </label>
+      </div>
+
+      <div id="billingAddressFields" style="display:none; border-left: 2px solid #3b82f6; padding-left: 12px; margin-bottom: 16px;">
+        <div class="form-group" style="margin-bottom: 10px;"><label for="billingName">Billing Name</label><input id="billingName" class="admin-input" type="text"></div>
+        <div class="form-group" style="margin-bottom: 10px;"><label for="billingAddress">Billing Address</label><input id="billingAddress" class="admin-input" type="text"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select id="paymentMethod" class="admin-input" style="padding: 8px; width: 100%;">
+          <option value="Mobile Money (MoMo)">Mobile Money (MoMo)</option>
+          <option value="Cash on Delivery">Cash on Delivery</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-top:16px;">
+        <button class="btn-secondary" onclick="goBackToShipping()">← Back to Shipping</button>
+        <button class="submit-btn" onclick="confirmOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Promo Panel (admin-only) -->
+  <div id="promoPanel" class="promo-panel">
+    <div class="promo-header">
+      <h2>🎉 Featured Promos</h2>
+      <span class="badge-promo" id="promoBadge">0</span>
+      <button class="promo-close" onclick="togglePromoPanel()">✕</button>
+    </div>
+    <div class="promo-content" id="promoList"></div>
+    <div class="promo-footer">
+      <input type="search" id="promoSearchInput" placeholder="🔍 Search promos..." style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px;">
+      <button class="promo-add-btn" onclick="openPromoEditModal()" style="flex: 1;">➕ Add Promo</button>
+    </div>
+  </div>
+
+  <!-- Promo Edit Modal -->
+  <div id="promoEditModal" class="promo-edit-modal">
+    <div class="promo-edit-box">
+      <h3 id="promoEditTitle">Add New Promo</h3>
+      <div class="promo-edit-form">
+        <input type="text" id="promoEditName" placeholder="Promo item name (e.g., Summer Sale Bundle)">
+        <input type="number" id="promoEditPrice" placeholder="Price (GHS)" min="0" step="0.01">
+        <input type="text" id="promoEditDesc" placeholder="Description (e.g., Limited time offer)">
+        <input type="text" id="promoEditImage" placeholder="Image URL or drag image below" readonly style="cursor:pointer;background:#f3f6fb">
+        <div id="promoDropZone" style="border:2px dashed #667eea;border-radius:8px;padding:20px;text-align:center;background:#f0f9ff;cursor:pointer">
+          <div style="font-size:24px;margin-bottom:8px">🖼️</div>
+          <p style="margin:0;font-size:12px;color:#666">Drag & drop image here or click</p>
+        </div>
+        <div id="promoEditPreview" style="text-align:center;display:none;margin-top:8px">
+          <img id="promoEditImg" src="" alt="Preview" style="max-width:100%;max-height:120px;border-radius:8px">
+        </div>
+      </div>
+      <div class="promo-edit-actions">
+        <button class="promo-save-btn" onclick="savePromoEdit()">✅ Save</button>
+        <button class="promo-cancel-btn" onclick="closePromoEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Hub Panel -->
+  <div id="infoHubPanel" class="info-hub-panel">
+    <div class="info-hub-header">
+      <h2>📊 Info Hub</h2>
+      <button class="info-hub-close" onclick="toggleInfoHubPanel(false)">✕</button>
+    </div>
+    <div id="infoHubContent" class="info-hub-content">
+      <!-- Widgets will be rendered here by JavaScript -->
+    </div>
+    <div class="info-footer">
+      All systems operational.
+    </div>
+  </div>
+
+
+  <!-- Floating Info Hub Button -->
+  <button id="infoHubBtn">ℹ️</button>
+
+  <!-- Floating Promo Button -->
+  <button id="promoBtn">🎉</button>
+
+  <!-- Video Management Panel (admin-only) -->
+  <div id="videoMgmtPanel" class="promo-edit-modal">
+    <div class="promo-edit-box">
+      <h3>🎬 Manage Videos</h3>
+      <div id="videoList" style="max-height: 40vh; overflow-y: auto; margin-bottom: 12px;"></div>
+      <h4 style="margin-top: 16px; margin-bottom: 8px; font-size: 14px;">Add New Video</h4>
+      <div class="promo-edit-form">
+        <input type="text" id="videoTitleInput" placeholder="Video Title">
+        <input type="file" id="videoFileInput" accept="video/*" style="border:none; padding: 0;">
+      </div>
+      <div class="promo-edit-actions" style="margin-top: 12px;">
+        <button class="promo-save-btn" onclick="addShowcaseVideo()">✅ Add Video</button>
+        <button class="promo-cancel-btn" onclick="toggleVideoMgmtPanel(false)">Close</button>
+      </div>
+      <div style="font-size: 11px; color: #666; margin-top: 12px; text-align: center;">
+        Note: Videos are stored locally in your browser. The "yearly lock timer" for updates is a conceptual feature; for this client-side app, all admin actions are protected by the admin password you've set.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Ultra Modern Media Player Modal -->
+  <div id="mediaPlayerModal" class="media-player-modal">
+    <div class="media-player-container">
+      <button id="mediaPlayerCloseBtn" class="media-player-close-btn">✕</button>
+      <h2>Ultra Modern Media Player</h2>
+      
+      <div id="media-drop-zone" class="media-drop-zone">
+          <div class="media-drop-zone-prompt">
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+              <span>Drag & Drop Video/Audio File</span>
+              <p>or click to select</p>
+          </div>
+      </div>
+      <input type="file" id="media-file-input" accept="video/*,audio/*" hidden>
+      <video id="video-audio-player" class="video-audio-player" controls></video>
+      
+      <button id="resetMediaBtn" class="reset-media-btn" style="display: none;">Unload Media</button>
+    </div>
+  </div>
+
+  <script>
+    const el = sel => document.querySelector(sel);
+    const uid = ()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+    const bookAdj=['Silent','Vivid','Hidden','Golden','Crimson','Quiet','Bright','Lost','Found','Ancient','Soft','Bold','Deep','Clear','Warm'];
+    const bookNoun=['City','Coast','River','Skies','Paths','Stories','Echoes','Fragments','Horizon','Garden','Forest','Mountain','Valley','Ocean'];
+    const bookTail=['of Accra','at Dawn','After Rain','in Motion','Without Maps','and Beyond','Forever','Untold','Rising','Fading'];
+    const firstNames=['Ama','Kojo','Efua','Nii','Yaw','Akosua','Kwame','Abena','Kofi','Adwoa'];
+    const lastNames=['Asare','Mensah','Boateng','Okoro','Addo','Owusu','Appiah','Gyamfi','Ankrah','Osei'];
+    const publishers=['Horizon Press','Vector House','Palm & Ink','Graphite','Blue Crane','Ash & River'];
+    const bookImages=['https://images.unsplash.com/photo-1524995997946-a1c2e315a42f','https://images.unsplash.com/photo-1519681393784-d120267933ba','https://images.unsplash.com/photo-1517433456452-f9633a875f6f','https://images.unsplash.com/photo-1473862170180-044aaa3be842'];
+    const randIn=(arr,i)=>arr[i%arr.length];
+    const randPrice=i=>Math.round(((i*73)%1165+35)*100)/100;
+    const genBookTitle=i=>`${randIn(bookAdj,i)} ${randIn(bookNoun,Math.floor(i/2))} ${randIn(bookTail,Math.floor(i/3))}`;
+    const genAuthor=i=>`${randIn(firstNames,i)} ${randIn(lastNames,Math.floor(i/2))}`;
+    const bookImgURL=i=>`${bookImages[i%bookImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const shoeBrands=['Nike','Adidas','Puma','Reebok','New Balance','Converse','Vans','Timberland'];
+    const shoeStyles=['Running','Basketball','Casual','Hiking','Sandal','Slip-On','Loafer','Boot'];
+    const shoeColors=['Black','White','Navy','Red','Brown','Gray','Blue','Beige'];
+    const shoeImages=['https://images.unsplash.com/photo-1542291026-7eec264c27ff','https://images.unsplash.com/photo-1556821552-7f41c5d440db','https://images.unsplash.com/photo-1463100099107-aa271be7f39f','https://images.unsplash.com/photo-1460353581641-37baddab0fa2'];
+    const genShoeTitle=i=>`${randIn(shoeBrands,i)} ${randIn(shoeStyles,Math.floor(i/2))} - ${randIn(shoeColors,Math.floor(i/3))}`;
+    const shoePrice=i=>Math.round(((i*89)%450+80)*100)/100;
+    const shoeImgURL=i=>`${shoeImages[i%shoeImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const schoolItems=['Math Textbook','Science Kit','Notebook (100 pgs)','Pencil Set (12)','Pen Pack (24)','School Bag','Geometry Box','Calculator','Ruler Set','Lunch Box'];
+    const schoolPrice=i=>Math.round(((i*43)%85+15)*100)/100;
+    const schoolImages=['https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8','https://images.unsplash.com/photo-1427504494785-405a6e6cee0f','https://images.unsplash.com/photo-1507842217343-583f20270319','https://images.unsplash.com/photo-1481627834876-b7833e8f5570'];
+    const schoolImgURL=i=>`${schoolImages[i%schoolImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const xmasItems=['Christmas Tree','Ornament Set','Tinsel Garland','LED String Lights','Santa Hat','Gift Wrap','Stocking','Christmas Mug','Advent Calendar','Snow Flakes'];
+    const xmasPrice=i=>Math.round(((i*52)%120+20)*100)/100;
+    const xmasImages=['https://images.unsplash.com/photo-1518895949257-7621c3c786d7','https://images.unsplash.com/photo-1511379938547-c1f69b13d835','https://images.unsplash.com/photo-1514888286974-6c03bf1a7e8e','https://images.unsplash.com/photo-1527811342141-69ad7d821ba0'];
+    const xmasImgURL=i=>`${xmasImages[i%xmasImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const storyTitles=['Cinderella Tales','The Lion King','Snow White Adventures','Sleeping Beauty','Beauty & Beast','Hansel & Gretel','Rapunzel','Aladdin Magic','Peter Pan','Jungle Book'];
+    const storyAuthor=['Classic','Timeless','Beloved','Popular','Cherished','Traditional','Fairy Tale','Adventure','Fantasy','Adventure'];
+    const storyPrice=i=>Math.round(((i*61)%95+25)*100)/100;
+    const storyImages=['https://images.unsplash.com/photo-1507842217343-583f20270319','https://images.unsplash.com/photo-1507842217343-583f20270319','https://images.unsplash.com/photo-1507842217343-583f20270319','https://images.unsplash.com/photo-1507842217343-583f20270319'];
+    const storyImgURL=i=>`${storyImages[i%storyImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const gameNames=['Chess Board','Lego Set','Puzzle 500pc','Board Game','Card Game','Monopoly','Scrabble','Video Game','Action Figures','Building Blocks'];
+    const gamePrice=i=>Math.round(((i*75)%200+45)*100)/100;
+    const gameImages=['https://images.unsplash.com/photo-1516975080664-ed2fc6a32937','https://images.unsplash.com/photo-1552820728-8ac41f1ce891','https://images.unsplash.com/photo-1611996575749-79d6d2dd433b','https://images.unsplash.com/photo-1560807707-ace0c25111b0'];
+    const gameImgURL=i=>`${gameImages[i%gameImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const posterColors=['Red Poster','Blue Poster','Green Poster','Yellow Poster','Purple Poster','Orange Poster','Pink Poster','Black Poster','White Poster','Rainbow Poster'];
+    const posterPrice=i=>Math.round(((i*38)%45+8)*100)/100;
+    const posterImages=['https://images.unsplash.com/photo-1549887534-f81b90255066','https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b','https://images.unsplash.com/photo-1561214115-6d2f1b0609fa','https://images.unsplash.com/photo-1516738901601-e6e99e305dcd'];
+    const posterImgURL=i=>`${posterImages[i%posterImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const bagNames=['Pink School Bag','Blue Backpack','Purple Tote','Rainbow Bag','Unicorn Bag','Butterfly Bag','Star Bag','Cloud Bag','Dinosaur Bag','Princess Bag'];
+    const bagPrice=i=>Math.round(((i*67)%120+35)*100)/100;
+    const bagImages=['https://images.unsplash.com/photo-1553062407-98eeb64c6a62','https://images.unsplash.com/photo-1546025562-36cebb5d842f','https://images.unsplash.com/photo-1548036328-c9fa89d128fa','https://images.unsplash.com/photo-1553062407-98eeb64c6a62'];
+    const bagImgURL=i=>`${bagImages[i%bagImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const diaryNames=['My Secret Diary','Princess Diary','Adventure Journal','Dream Journal','Happy Planner','Gratitude Journal','My Story Journal','Creative Notebook','Travel Journal','Daily Planner'];
+    const diaryPrice=i=>Math.round(((i*29)%55+12)*100)/100;
+    const diaryImages=['https://images.unsplash.com/photo-1507842217343-583f20270319','https://images.unsplash.com/photo-1481627834876-b7833e8f5570','https://images.unsplash.com/photo-1507842217343-583f20270319','https://images.unsplash.com/photo-1517433456452-f9633a875f6f'];
+    const diaryImgURL=i=>`${diaryImages[i%diaryImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const carNames=['Red Race Car','Blue Taxi','Yellow School Bus','Green Police Car','Orange Fire Truck','Pink Toy Car','Purple Monster Truck','White Ambulance','Black Sports Car','Silver SUV'];
+    const carPrice=i=>Math.round(((i*45)%65+18)*100)/100;
+    const carImages=['https://images.unsplash.com/photo-1581235720704-06d3acfcb36f','https://images.unsplash.com/photo-1609708536965-39ecca6a7fbe','https://images.unsplash.com/photo-1581235720704-06d3acfcb36f','https://images.unsplash.com/photo-1594787318286-3d835c1cab83'];
+    const carImgURL=i=>`${carImages[i%carImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+    const dressNames=['Pink Princess Dress','Blue Fairy Dress','Green Mermaid Dress','Purple Queen Dress','Yellow Sunflower Dress','Red Rose Dress','White Angel Dress','Rainbow Dress','Butterfly Dress','Sparkle Dress'];
+    const dressPrice=i=>Math.round(((i*89)%180+45)*100)/100;
+    const dressImages=['https://images.unsplash.com/photo-1558618666-fcd25c85cd64','https://images.unsplash.com/photo-1599662015612-c0a0ddeab569','https://images.unsplash.com/photo-1515250540332-b3a7a338b8d7','https://images.unsplash.com/photo-1558618666-fcd25c85cd64'];
+    const dressImgURL=i=>`${dressImages[i%dressImages.length]}?q=80&w=${600+(i%5)*40}&auto=format&fit=crop`;
+
+    let allProducts = [];
+
+    function generateAllProducts(){
+      const arr = [];
+      for(let i=0; i<150; i++) arr.push({id:uid(), category:'Books', title:genBookTitle(i), author:genAuthor(i), publisher:randIn(publishers,i), price:randPrice(i), image:bookImgURL(i), detail:`${randIn(publishers,i)} | ${genAuthor(i)}`});
+      for(let i=0; i<100; i++) arr.push({id:uid(), category:'Shoes', title:genShoeTitle(i), size:`${36+(i%8)}`, brand:randIn(shoeBrands,i), price:shoePrice(i), image:shoeImgURL(i), detail:`Size ${36+(i%8)} | ${randIn(shoeBrands,i)}`});
+      for(let i=0; i<80; i++) arr.push({id:uid(), category:'School Supplies', title:randIn(schoolItems,i), price:schoolPrice(i), image:schoolImgURL(i), detail:'Essential Learning Item'});
+      for(let i=0; i<60; i++) arr.push({id:uid(), category:'Christmas Items', title:randIn(xmasItems,i), price:xmasPrice(i), image:xmasImgURL(i), detail:'Holiday Celebration'});
+      for(let i=0; i<50; i++) arr.push({id:uid(), category:'Story Books', title:randIn(storyTitles,i), author:randIn(storyAuthor,i), price:storyPrice(i), image:storyImgURL(i), detail:`Children's Story | ${randIn(storyAuthor,i)}`});
+      for(let i=0; i<70; i++) arr.push({id:uid(), category:'Kids Games', title:randIn(gameNames,i), price:gamePrice(i), image:gameImgURL(i), detail:'Fun & Educational'});
+      for(let i=0; i<50; i++) arr.push({id:uid(), category:'Posters & Colors', title:randIn(posterColors,i), price:posterPrice(i), image:posterImgURL(i), detail:'Vibrant Colors'});
+      for(let i=0; i<60; i++) arr.push({id:uid(), category:'Kids Handbags', title:randIn(bagNames,i), price:bagPrice(i), image:bagImgURL(i), detail:'Stylish & Durable'});
+      for(let i=0; i<55; i++) arr.push({id:uid(), category:'Diary Books', title:randIn(diaryNames,i), price:diaryPrice(i), image:diaryImgURL(i), detail:'Personal Journal'});
+      for(let i=0; i<65; i++) arr.push({id:uid(), category:'Kids Cars', title:randIn(carNames,i), price:carPrice(i), image:carImgURL(i), detail:'Toy Vehicle'});
+      for(let i=0; i<75; i++) arr.push({id:uid(), category:'Kids Dresses', title:randIn(dressNames,i), price:dressPrice(i), image:dressImgURL(i), detail:'Beautiful & Comfortable'});
+      return arr;
+    }
+
+    const cardHTML=(r)=>{let d=r.author||r.detail||r.brand||'';return`<article class="card" onclick="addToCart('${r.id}')"><div class="cover"><img src="${r.image}" alt="Product" onerror="this.src='https://via.placeholder.com/300x400?text=${encodeURIComponent(r.title)}'"></div><div class="content"><div style="font-size:11px;color:#0ea5e9;font-weight:600;margin-bottom:4px">${r.category}</div><div class="title">${r.title}</div><div class="meta">${d}</div><div class="price">GHS ${r.price}</div><button class="add-btn" onclick="event.stopPropagation(); addToCart('${r.id}')">+ Add to Cart</button></div></article>`;};
+
+    function render(){const grid=el('#grid');grid.innerHTML='';const frag=document.createDocumentFragment();for(const p of allProducts){const w=document.createElement('div');w.innerHTML=cardHTML(p);frag.appendChild(w.firstElementChild);}grid.appendChild(frag);}
+
+    // Persistence keys
+    const PRODUCTS_KEY = 'brh.products.v1';
+    const FIRST_LOAD_KEY = 'brh.firstload.v1';
+
+    const saveProducts = ()=>{ try{ localStorage.setItem(PRODUCTS_KEY, JSON.stringify(allProducts)); }catch(e){ console.error('saveProducts',e); } };
+    const loadProducts = ()=>{ try{ const v = localStorage.getItem(PRODUCTS_KEY); if(v){ allProducts = JSON.parse(v); return true; } return false; }catch(e){ console.error('loadProducts',e); return false; } };
+
+    window.addEventListener('DOMContentLoaded',()=>{
+      // On first ever load, generate the initial catalog. On subsequent loads, just load what's in storage.
+      const isFirstLoad = !localStorage.getItem(FIRST_LOAD_KEY);
+      if (isFirstLoad) {
+        allProducts = generateAllProducts();
+        saveProducts();
+        localStorage.setItem(FIRST_LOAD_KEY, 'done');
+      } else {
+        loadProducts();
+      }
+      render();
+      loadCart();
+    });
+    
+    const CART_KEY='brh.cart.v1';const PHONE_KEY='brh.whatsapp.phone';let cart=[];
+    const loadCart=()=>{try{cart=JSON.parse(localStorage.getItem(CART_KEY))||[];}catch(e){cart=[];}updateCartBadge();};
+    const saveCart=()=>{localStorage.setItem(CART_KEY,JSON.stringify(cart));updateCartBadge();updateInfoHubRealtime();};
+    const updateCartBadge=()=>{const elc=document.getElementById('cartCount');if(!elc)return;const t=cart.reduce((s,i)=>s+(i.qty||0),0);elc.textContent=t;if(t>0)elc.classList.add('pulse');else elc.classList.remove('pulse');updateInfoHubRealtime();};
+    window.addToCart=(id)=>{const p=allProducts.find(x=>x.id===id);if(!p){showToast('❌ Product not found','error');return;}const it=cart.find(x=>x.id===id);if(it){it.qty++;showToast(`📦 ${p.title} qty increased to ${it.qty}`,'success');}else{cart.push({id:p.id,category:p.category,title:p.title,price:p.price,image:p.image,qty:1});showToast(`✅ ${p.title} added to cart!`,'success');}saveCart();renderCart();console.log('✅ Added to cart:',p.title);};
+    window.removeFromCart=(id)=>{const item=cart.find(i=>i.id===id);cart=cart.filter(i=>i.id!==id);saveCart();renderCart();if(item){showToast(`🗑️ ${item.title} removed from cart`,'success');console.log('❌ Removed from cart:',item.title);updateInfoHubRealtime();}};
+    window.changeQty=(id,d)=>{const it=cart.find(i=>i.id===id);if(!it)return;it.qty+=d;if(it.qty<=0)removeFromCart(id);else{saveCart();renderCart();}};
+
+    const renderCart=()=>{
+      const p=document.getElementById('cartPanel');if(!p)return;
+      p.innerHTML=`<h3>🛒 Your Cart (${cart.length} items)</h3>`;
+      // Client summary / controls inside cart
+      const clientName = localStorage.getItem('brh.client.name')||'';
+      const clientNumber = localStorage.getItem('brh.client.number')||'';
+      const clientHtml = `
+        <div style="padding:10px;border-radius:8px;background:#f8fafc;margin:8px 0;border:1px solid #e6eef9">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:700">Customer</div>
+              <div style="font-size:13px;color:#555">${clientName ? clientName : '<span style=\"color:#999\">No name set</span>'}</div>
+              <div style="font-size:13px;color:#555">${clientNumber ? clientNumber : '<span style=\"color:#999\">No number set</span>'}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <button style="padding:8px;border-radius:6px;border:1px solid #e3e8ef;background:#fff;cursor:pointer" onclick="showNameModal()">Enter Name</button>
+              <button style="padding:8px;border-radius:6px;border:1px solid #e3e8ef;background:#fff;cursor:pointer" onclick="showNumberModal()">Enter Number</button>
+              <button style="padding:8px;border-radius:6px;background:linear-gradient(90deg,#f97316,#f43f5e);color:#fff;border:none;cursor:pointer" onclick="openAgreementModal()">Agreement / Pay</button>
+            </div>
+          </div>
+        </div>`;
+      p.innerHTML += clientHtml;
+
+      if(cart.length===0){p.innerHTML+=`<div class="cart-empty">Your cart is empty</div>`;updateCartBadge();return;}
+
+      const l=document.createElement('div');let t=0;
+      cart.forEach(it=>{const st=(it.price*(it.qty||1)).toFixed(2);t+=parseFloat(st);const d=document.createElement('div');d.className='cart-item';d.innerHTML=`<img src="${it.image}" alt="" loading="lazy"><div class="meta"><div class="title">${it.title}</div><div style="font-size:11px;color:#0ea5e9;margin-bottom:3px">${it.category}</div><div class="price">GHS ${it.price}</div><div class="cart-actions"><button onclick="changeQty('${it.id}',-1)">−</button><span style="min-width:24px;text-align:center;display:inline-block">${it.qty}</span><button onclick="changeQty('${it.id}',1)">+</button><button onclick="removeFromCart('${it.id}')" style="background:#ef4444;margin-left:8px">×</button></div></div>`;l.appendChild(d);});
+      p.appendChild(l);
+
+      const tot=t.toFixed(2);
+      const sph=localStorage.getItem(PHONE_KEY)||'';
+      const emailKey = 'brh.client.email';
+      const sem = localStorage.getItem(emailKey) || '';
+      const f=document.createElement('div');
+      f.className='cart-footer';
+      f.innerHTML=`<div class="cart-total"><span>💰 Total:</span><span style="color:#10b981;font-size:16px">GHS ${tot}</span></div>
+        <input type="text" id="whatsappPhone" class="phone-input" placeholder="WhatsApp number (e.g., +233...)" value="${sph}">
+        <input type="email" id="clientEmail" class="phone-input" placeholder="Your email for order confirmation" value="${sem}">
+        <button class="checkout-btn" style="background:#3b82f6; margin-bottom:8px;" onclick="showShippingModal()">🛒 Proceed to Checkout</button>
+        <div style="display:flex; gap:8px;">
+          <button class="checkout-btn" style="flex:1; background:#25d366;" onclick="proceedCheckout('${tot}')">📲 Order via WhatsApp</button>
+          <button class="checkout-btn email-btn" style="flex:1; background:#6b7280;" onclick="proceedCheckoutEmail('${tot}')">📧 Order via Email</button>
+        </div>
+        <button class="checkout-btn" style="background:#8b5cf6; margin-top:8px;" onclick="handleSuggestion()">💡 Leave a Suggestion</button>
+        `;
+      p.appendChild(f);updateCartBadge();
+    };
+
+    // --- Shipping Modal Functions ---
+    const SHIPPING_ADDRESS_KEY = 'brh.shipping.address';
+    const BILLING_INFO_KEY = 'brh.billing.info';
+    const PAYMENT_METHOD_KEY = 'brh.payment.method';
+
+    function showShippingModal() {
+      if (cart.length === 0) { showToast('🛒 Your cart is empty.', 'error'); return; }
+      // Pre-fill form with existing data
+      document.getElementById('shippingName').value = localStorage.getItem(CLIENT_NAME_KEY) || '';
+      document.getElementById('shippingPhone').value = localStorage.getItem(PHONE_KEY) || '';
+      document.getElementById('shippingAddress').value = localStorage.getItem(SHIPPING_ADDRESS_KEY) || '';
+      document.getElementById('shippingModal').classList.add('show');
+    }
+
+    function hideShippingModal() {
+      document.getElementById('shippingModal').classList.remove('show');
+    }
+
+    function proceedToPaymentStep() {
+      const name = document.getElementById('shippingName').value.trim();
+      const phone = document.getElementById('shippingPhone').value.trim();
+      const address = document.getElementById('shippingAddress').value.trim();
+      if (!name || !phone || !address) { showToast('❌ Please fill in all shipping details.', 'error'); return; }
+      // Save the details
+      localStorage.setItem(CLIENT_NAME_KEY, name);
+      localStorage.setItem(PHONE_KEY, phone);
+      localStorage.setItem(SHIPPING_ADDRESS_KEY, address);
+
+      hideShippingModal();
+      proceedCheckout(); // Proceed to WhatsApp with the saved info
+      showPaymentModal();
+    }
+
+    // --- Billing & Payment Modal Functions ---
+    function showPaymentModal() {
+      document.getElementById('paymentModal').classList.add('show');
+      const savedBilling = JSON.parse(localStorage.getItem(BILLING_INFO_KEY) || '{}');
+      const savedPayment = localStorage.getItem(PAYMENT_METHOD_KEY) || 'Mobile Money (MoMo)';
+      
+      document.getElementById('billingName').value = savedBilling.name || '';
+      document.getElementById('billingAddress').value = savedBilling.address || '';
+      document.getElementById('paymentMethod').value = savedPayment;
+      toggleBillingAddress(); // To set initial state of the fields
+    }
+
+    function hidePaymentModal() {
+      document.getElementById('paymentModal').classList.remove('show');
+    }
+
+    function goBackToShipping() {
+      hidePaymentModal();
+      showShippingModal();
+    }
+
+    function toggleBillingAddress() {
+      const checkbox = document.getElementById('billingSameAsShipping');
+      const fields = document.getElementById('billingAddressFields');
+      fields.style.display = checkbox.checked ? 'none' : 'block';
+    }
+
+    function confirmOrder() {
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      localStorage.setItem(PAYMENT_METHOD_KEY, paymentMethod);
+
+      const useSameAddress = document.getElementById('billingSameAsShipping').checked;
+      let billingInfo = { sameAsShipping: useSameAddress };
+      if (!useSameAddress) {
+        billingInfo.name = document.getElementById('billingName').value.trim();
+        billingInfo.address = document.getElementById('billingAddress').value.trim();
+        if (!billingInfo.name || !billingInfo.address) { showToast('❌ Please fill in all billing details.', 'error'); return; }
+      }
+      localStorage.setItem(BILLING_INFO_KEY, JSON.stringify(billingInfo));
+
+      hidePaymentModal();
+      proceedCheckout(); // This will now include all the new info
+    }
+    
+    // --- WhatsApp Checkout ---
+    const ADMIN_WHATSAPP_NUMBER = '+233596334488'; // <-- Admin's WhatsApp number for receiving orders.
+
+    window.proceedCheckout=(total)=>{
+      if(cart.length===0){showToast('🛒 Cart is empty','error');showStatus('Cart is empty');return;}
+      const ph = localStorage.getItem(PHONE_KEY) || '';
+      const clientName = localStorage.getItem(CLIENT_NAME_KEY) || '';
+      const shippingAddress = localStorage.getItem(SHIPPING_ADDRESS_KEY) || 'Not provided';
+      const paymentMethod = localStorage.getItem(PAYMENT_METHOD_KEY) || 'Not selected';
+      const billingInfo = JSON.parse(localStorage.getItem(BILLING_INFO_KEY) || '{}');
+      let msg='*📦 ORDER FROM REIGN HUB*%0A%0A';let ct=0;
+      cart.forEach((it,idx)=>{const it_tot=(it.price*(it.qty||1)).toFixed(2);ct+=parseFloat(it_tot);msg+=`*${idx+1}. ${encodeURIComponent(it.title)}*%0A   📁 Category: ${encodeURIComponent(it.category)}%0A   💰 Price: GHS ${it.price}%0A   📊 Quantity: ${it.qty}%0A   ✅ Subtotal: GHS ${it_tot}%0A%0A`;});
+      msg+=`*═══════════════════════*%0A*💵 TOTAL AMOUNT: GHS ${ct.toFixed(2)}*%0A*═══════════════════════*%0A%0A`;
+      msg += `*🚚 SHIPPING DETAILS*%0A`;
+      msg += `*Name:* ${encodeURIComponent(clientName)}%0A`;
+      msg += `*WhatsApp:* ${encodeURIComponent(ph)}%0A`;
+      msg += `*Address:* ${encodeURIComponent(shippingAddress)}%0A%0A`;
+
+      if (billingInfo.sameAsShipping) {
+        msg += `*🧾 BILLING ADDRESS*%0A_Same as shipping address_%0A%0A`;
+      } else {
+        msg += `*🧾 BILLING DETAILS*%0A`;
+        msg += `*Name:* ${encodeURIComponent(billingInfo.name || 'N/A')}%0A`;
+        msg += `*Address:* ${encodeURIComponent(billingInfo.address || 'N/A')}%0A%0A`;
+      }
+
+      msg += `*💳 PAYMENT METHOD*%0A${encodeURIComponent(paymentMethod)}%0A%0A`;
+      msg += `Thank you for shopping at Reign Hub! 🎉%0AReady to complete your order?`;
+      const adminPhn = ADMIN_WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
+      showToast(`📲 Opening WhatsApp with ${cart.length} items (GHS ${ct.toFixed(2)})`,'success');
+      console.log('📲 Checkout initiated:',{items:cart.length,total:ct.toFixed(2),phone:ph,clientName,address:shippingAddress});
+      window.open(`https://wa.me/${adminPhn}?text=${msg}`,'_blank');
+    };
+
+    window.proceedCheckoutEmail = (total) => {
+      if(cart.length===0){showToast('🛒 Cart is empty','error');return;}
+      const emailInput = document.getElementById('clientEmail');
+      const email = (emailInput?.value||'').trim();
+      if(!email){showToast('📧 Please enter your email address','error');return;}
+      localStorage.setItem('brh.client.email', email);
+
+      const clientName = localStorage.getItem('brh.client.name')||'';
+      let subject = `Order from Reign Hub for ${clientName || 'Customer'}`;
+      let body = `Hello ${clientName || 'Reign Hub'},\n\nHere is my order:\n\n`;
+      let cartTotal = 0;
+      cart.forEach((it, idx) => {
+        const itemTotal = it.price * (it.qty || 1);
+        cartTotal += itemTotal;
+        body += `${idx + 1}. ${it.title}\n   - Qty: ${it.qty}\n   - Price: GHS ${it.price.toFixed(2)}\n   - Subtotal: GHS ${itemTotal.toFixed(2)}\n\n`;
+      });
+      body += `-------------------------------------\nTOTAL AMOUNT: GHS ${cartTotal.toFixed(2)}\n-------------------------------------\n\nThank you!`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    };
+
+    window.handleSuggestion = () => {
+      const suggestion = prompt("We'd love to hear your feedback! What can we improve on the website?");
+      if (suggestion && suggestion.trim()) {
+        const recipientEmail = 'your-email@example.com'; // <-- IMPORTANT: Change this to your email address
+        const subject = 'Website Suggestion from a Customer';
+        const body = `A customer has left the following suggestion:\n\n"${suggestion.trim()}"`;
+        window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        showToast('✅ Thank you! Opening your email client to send feedback.', 'success');
+      }
+    };
+
+    const showStatus=(t)=>{const p=document.getElementById('cartPanel');if(!p)return;const ex=p.querySelector('.status-msg');if(ex)ex.remove();const m=document.createElement('div');m.className='status-msg';m.textContent=t;p.insertBefore(m,p.firstChild.nextSibling);setTimeout(()=>m.remove(),2000);};
+    window.showToast=(msg,type='info')=>{const toast=document.createElement('div');toast.className=`toast ${type}`;toast.textContent=msg;document.body.appendChild(toast);setTimeout(()=>toast.remove(),5000);};
+
+    document.getElementById('cartBtn').addEventListener('click',()=>{const p=document.getElementById('cartPanel');if(p.style.display==='block'){p.style.display='none';showToast('🛒 Cart closed','info');}else{p.style.display='block';renderCart();showToast(`🛒 Cart opened (${cart.length} items)`,'success');console.log('🛒 Cart opened:',cart);}});
+    // adminAction: 'upload' or 'manage'
+    let adminAction = 'upload';
+    document.getElementById('uploadBtn').addEventListener('click', ()=>{ showToast('🔐 Admin authentication required...','info'); adminAction='upload'; showAdminModal(); console.log('📤 Upload panel requested'); });
+    document.getElementById('manageBtn').addEventListener('click', ()=>{ showToast('🔐 Admin authentication required...','info'); adminAction='manage'; showAdminModal(); console.log('🧰 Manage panel requested'); });
+    document.getElementById('exportBtn').addEventListener('click', ()=>{ showToast('🔐 Admin authentication required...','info'); adminAction='export'; showAdminModal(); console.log('📥 Export data requested'); });
+    document.getElementById('manageVideosBtn').addEventListener('click', ()=>{ showToast('🔐 Admin authentication required...','info'); adminAction='videos'; showAdminModal(); console.log('🎬 Video management requested'); });
+    document.getElementById('promoBtn').addEventListener('click', ()=>{ showToast('🔐 Admin authentication required...','info'); adminAction='promo'; showAdminModal(); console.log('🎉 Promo panel requested'); });
+    document.getElementById('infoHubBtn').addEventListener('click', () => toggleInfoHubPanel(true));
+
+    let selectedImageFile=null;
+    window.toggleUploadPanel=()=>{const p=document.getElementById('uploadPanel');p.classList.toggle('show');if(!p.classList.contains('show'))clearUploadForm();};
+    const dz=document.getElementById('dropZone');['dragenter','dragover','dragleave','drop'].forEach(e=>dz.addEventListener(e,preventDefaults,false));
+    function preventDefaults(e){e.preventDefault();e.stopPropagation();}
+    ['dragenter','dragover'].forEach(e=>dz.addEventListener(e,()=>dz.classList.add('dragover')));
+    ['dragleave','drop'].forEach(e=>dz.addEventListener(e,()=>dz.classList.remove('dragover')));
+    dz.addEventListener('drop',(e)=>{const dt=e.dataTransfer;const f=dt.files;handleFiles(f);});
+    window.handleFileSelect=(e)=>{handleFiles(e.target.files);};
+    function handleFiles(files){if(files.length===0)return;const f=files[0];if(!f.type.startsWith('image/')){alert('Please select an image file');return;}selectedImageFile=f;showImagePreview(f);}
+    function showImagePreview(file){const r=new FileReader();r.onload=(e)=>{const p=document.getElementById('preview');document.getElementById('previewImg').src=e.target.result;p.style.display='block';updateInfoHubRealtime();};r.readAsDataURL(file);}
+    window.clearImage=()=>{selectedImageFile=null;document.getElementById('fileInput').value='';document.getElementById('preview').style.display='none';document.getElementById('previewImg').src='';};
+    window.addCustomProduct=()=>{const n=document.getElementById('productName').value.trim();const pr=parseFloat(document.getElementById('productPrice').value);const c=document.getElementById('productCategory').value;const d=document.getElementById('productDesc').value.trim();if(!n){alert('Please enter product name');return;}if(!pr||pr<=0){alert('Please enter valid price');return;}if(!selectedImageFile){alert('Please select an image');return;}const r=new FileReader();r.onload=(e)=>{const id=e.target.result;const np={id:uid(),category:c,title:n,price:pr,image:id,detail:d||'Custom Product',isCustom:true};allProducts.unshift(np);saveProducts();render();clearUploadForm();document.getElementById('uploadPanel').classList.remove('show');showToast(`✅ Product \"${n}\" added for GHS ${pr}!`,'success');showStatus('✅ Product added successfully!');console.log('📦 Product uploaded:',{name:n,price:pr,category:c});};r.readAsDataURL(selectedImageFile);};
+    function clearUploadForm(){clearImage();document.getElementById('productName').value='';document.getElementById('productPrice').value='';document.getElementById('productDesc').value='';document.getElementById('productCategory').value='Books';}
+
+    // ----------------- Admin modal & authentication -----------------
+    const ADMIN_KEY = 'brh.admin.pass';
+    const adminModal = document.getElementById('adminModal');
+    const adminInput = document.getElementById('adminPassInput');
+    const adminNote = document.getElementById('adminNote');
+    const adminSubmitBtn = document.getElementById('adminSubmit');
+    const adminCancelBtn = document.getElementById('adminCancel');
+
+    function isAdminSet(){ return !!localStorage.getItem(ADMIN_KEY); }
+
+    // Hash helper using SubtleCrypto (SHA-256) -> hex string
+    async function hashString(str){
+      try{
+        const enc = new TextEncoder();
+        const data = enc.encode(str);
+        const hash = await crypto.subtle.digest('SHA-256', data);
+        const bytes = new Uint8Array(hash);
+        return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');
+      }catch(e){ console.error('hashString error',e); return null; }
+    }
+
+    function showAdminModal(){
+      adminInput.value = '';
+      if(!isAdminSet()){
+        adminNote.textContent = 'No admin password set. Enter a new password to protect the admin panels.';
+        adminSubmitBtn.textContent = 'Set Password';
+      } else {
+        adminNote.textContent = 'Enter admin password to continue.';
+        adminSubmitBtn.textContent = 'Login';
+      }
+      adminModal.classList.add('show');
+      adminInput.focus();
+    }
+
+    function hideAdminModal(){ adminModal.classList.remove('show'); }
+
+    adminCancelBtn.addEventListener('click', ()=>{ hideAdminModal(); });
+
+    adminSubmitBtn.addEventListener('click', async ()=>{
+      const val = adminInput.value || '';
+      if(!val){ showToast('❌ Please enter a password','error'); return; }
+      if(!isAdminSet()){
+        // set new password (store as SHA-256 hash)
+        const h = await hashString(val);
+        if(!h){ showToast('❌ Unable to set password','error'); return; }
+        localStorage.setItem(ADMIN_KEY, h);
+        hideAdminModal();
+        showToast('✅ Admin password set successfully!','success');
+        showStatus('✅ Admin password set. You can now add products.');
+        console.log('✅ Admin password created (hashed)');
+        // open the selected admin panel after setting
+        if(adminAction === 'manage') toggleRemovePanel(); else if(adminAction === 'export') toggleExportPanel(); else if(adminAction === 'promo') togglePromoPanel(); else if(adminAction === 'videos') toggleVideoMgmtPanel(true); else toggleUploadPanel();
+      } else {
+        const stored = localStorage.getItem(ADMIN_KEY);
+        const h = await hashString(val);
+        if(h && stored && h === stored){ hideAdminModal(); showToast('✅ Admin authenticated!','success'); console.log('✅ Admin authenticated for action:',adminAction); if(adminAction === 'manage') toggleRemovePanel(); else if(adminAction === 'export') toggleExportPanel(); else if(adminAction === 'promo') togglePromoPanel(); else if(adminAction === 'videos') toggleVideoMgmtPanel(true); else toggleUploadPanel(); }
+        else { showToast('❌ Incorrect password','error'); console.warn('❌ Failed password attempt'); }
+      }
+    });
+
+    // ----------------- Remove panel functions -----------------
+    function toggleRemovePanel(){ const p = document.getElementById('removePanel'); p.classList.toggle('show'); if(p.classList.contains('show')) renderRemoveList(); }
+
+    function renderRemoveList(){
+      const list = document.getElementById('removeList'); if(!list) return; list.innerHTML = '';
+      // show products with small thumbnail and remove button
+      allProducts.forEach(prod => {
+        const row = document.createElement('div');
+        row.style.display = 'flex'; row.style.alignItems = 'center'; row.style.justifyContent = 'space-between'; row.style.padding = '8px'; row.style.borderBottom = '1px solid #eee';
+        const left = document.createElement('div'); left.style.display='flex'; left.style.alignItems='center'; left.style.gap='10px';
+        const img = document.createElement('img'); img.src = prod.image; img.alt = prod.title; img.style.width='64px'; img.style.height='64px'; img.style.objectFit='cover'; img.style.borderRadius='8px';
+        const info = document.createElement('div'); info.innerHTML = `<div style="font-weight:700">${prod.title}</div><div style="font-size:12px;color:#666">${prod.category} • GHS ${prod.price}</div>`;
+        left.appendChild(img); left.appendChild(info);
+        const right = document.createElement('div');
+        const btn = document.createElement('button'); btn.textContent = 'Remove'; btn.style.background='#ef4444'; btn.style.color='#fff'; btn.style.border='none'; btn.style.padding='8px'; btn.style.borderRadius='8px'; btn.style.cursor='pointer';
+        btn.addEventListener('click', ()=>removeProduct(prod.id));
+        right.appendChild(btn);
+        row.appendChild(left); row.appendChild(right);
+        list.appendChild(row);
+      });
+    }
+
+    function removeProduct(id){
+      if(!confirm('Remove this product from the store? This action cannot be undone.')) return;
+      const removed = allProducts.find(p=>p.id === id);
+      // Remove from main product list
+      allProducts = allProducts.filter(p=>p.id !== id);
+      // Remove from cart if present
+      cart = cart.filter(i=>i.id !== id);
+      // Also remove from promos if it's featured there
+      allPromos = allPromos.filter(p => p.id !== id);
+
+      saveCart(); saveProducts(); savePromos(); render(); renderCart(); renderRemoveList(); renderPromoList(); showToast(`🗑️ Product \"${removed?.title}\" removed!`,'success'); console.log('❌ Product removed from store:', removed?.title);
+      updateInfoHubRealtime(); }
+
+    function removeAllProducts(){
+      if(!confirm('Are you sure you want to delete ALL products? This will also clear the cart and cannot be undone.')) return;
+      allProducts = [];
+      allPromos = [];
+      cart = [];
+      saveProducts(); savePromos(); saveCart(); render(); renderCart(); renderRemoveList(); renderPromoList();
+      showToast('🗑️ All products have been deleted.','success'); console.log('❌ All products removed from store.'); updateInfoHubRealtime();
+    }
+
+    // ----------------- Change admin password (simple client-side flow) -----------------
+    document.getElementById('changePassBtn').addEventListener('click', ()=>{ changeAdminPassword(); });
+
+    async function changeAdminPassword(){
+      if(!isAdminSet()){ showToast('❌ No admin password is set yet','error'); return; }
+      const cur = prompt('Enter current admin password:'); if(cur===null) { showToast('❌ Password change cancelled','info'); return; }
+      const stored = localStorage.getItem(ADMIN_KEY);
+      const curHash = await hashString(cur);
+      if(!curHash || curHash !== stored){ showToast('❌ Incorrect current password','error'); console.warn('❌ Failed password change attempt'); return; }
+      const np = prompt('Enter new admin password:'); if(np===null) { showToast('❌ Password change cancelled','info'); return; }
+      if(!np || np.length<3){ showToast('❌ Password must be at least 3 characters','error'); return; }
+      const np2 = prompt('Confirm new admin password:'); if(np2===null) { showToast('❌ Password change cancelled','info'); return; }
+      if(np !== np2){ showToast('❌ Passwords do not match','error'); return; }
+      const newHash = await hashString(np);
+      if(!newHash){ showToast('❌ Unable to update password','error'); return; }
+      localStorage.setItem(ADMIN_KEY, newHash);
+      showToast('✅ Admin password changed successfully!','success');
+      showStatus('✅ Admin password changed');
+      console.log('✅ Admin password updated (hashed)');
+    }
+
+    // ----------------- Export panel functions -----------------
+    function toggleExportPanel(){ const p = document.getElementById('exportPanel'); p.classList.toggle('show'); if(p.classList.contains('show')) renderExportData(); }
+
+    function renderExportData(){
+      try{
+        const area = document.getElementById('exportArea');
+        // include common keys but redact sensitive information
+        const keys = ['brh.admin.pass','brh.whatsapp.phone','brh.cart.v1','brh.products.v1','brh.client.name','brh.client.number','brh.promos.v1', 'brh.videos.v1'];
+        const out = {};
+        keys.forEach(k=>{
+          try{
+            const v = localStorage.getItem(k);
+            // redact client personal data
+            if(k === 'brh.client.name' || k === 'brh.client.number'){
+              out[k] = v ? '[REDACTED]' : null;
+            } else if(k === 'brh.admin.pass'){
+              // admin pass is stored as a hash; mask it in exports
+              out[k] = v ? '[HASH_REDACTED]' : null;
+            } else {
+              out[k] = v;
+            }
+          }catch(e){ out[k]=null; }
+        });
+        // ensure latest products/promos saved
+        try{ saveProducts(); savePromos(); saveShowcaseVideos(); }catch(e){}
+        area.value = JSON.stringify(out, null, 2);
+        const copyBtn = document.getElementById('copyExportBtn'); if(copyBtn) copyBtn.onclick = ()=>{ navigator.clipboard.writeText(area.value).then(()=>{ showToast('✅ Export copied to clipboard!','success'); showStatus('✅ Export copied to clipboard'); console.log('📋 Export data copied'); }).catch(()=>{ showToast('❌ Copy failed — please try again','error'); }); };
+      }catch(e){ console.error('renderExportData',e); }
+    }
+
+    function downloadExport(){ try{ const area = document.getElementById('exportArea'); const blob = new Blob([area.value], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'reignhub-export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }catch(e){ console.error('downloadExport',e); } }
+
+    // ----------------- Client Name/Number and Agreement -----------------
+    const CLIENT_NAME_KEY = 'brh.client.name';
+    const CLIENT_NUMBER_KEY = 'brh.client.number';
+    // Note: CLIENT_NUMBER_KEY is being phased out in favor of PHONE_KEY from shipping.
+    const CLIENT_AGREE_KEY = 'brh.client.agreed';
+
+    function showNameModal(){ document.getElementById('nameModal').classList.add('show'); document.getElementById('clientNameInput').value = localStorage.getItem(CLIENT_NAME_KEY)||''; }
+    function hideNameModal(){ document.getElementById('nameModal').classList.remove('show'); }
+    function saveClientName(){ const v = document.getElementById('clientNameInput').value.trim(); if(!v){ showToast('❌ Please enter your name','error'); return; } localStorage.setItem(CLIENT_NAME_KEY,v); hideNameModal(); showToast('✅ Name saved','success'); updateClientBadge(); }
+
+    function showNumberModal(){ document.getElementById('numberModal').classList.add('show'); document.getElementById('clientNumberInput').value = localStorage.getItem(CLIENT_NUMBER_KEY)||''; }
+    function hideNumberModal(){ document.getElementById('numberModal').classList.remove('show'); }
+    function saveClientNumber(){ const v = document.getElementById('clientNumberInput').value.trim(); if(!v){ showToast('❌ Please enter your number','error'); return; } localStorage.setItem(CLIENT_NUMBER_KEY,v); hideNumberModal(); showToast('✅ Number saved','success'); updateClientBadge(); }
+
+    function updateClientBadge(){ const name = localStorage.getItem(CLIENT_NAME_KEY)||''; const num = localStorage.getItem(CLIENT_NUMBER_KEY)||''; // show as small status in console
+      console.log('💠 Client:', name, num);
+    }
+
+    // header buttons moved into cart; cart will call showNameModal/showNumberModal
+
+    // Agreement flow
+    function openAgreementModal(){ document.getElementById('agreementModal').classList.add('show'); }
+    function closeAgreementModal(){ document.getElementById('agreementModal').classList.remove('show'); }
+    function acceptAgreement(){ // on agreement success, add a non-blocking client-number item to cart
+      const num = localStorage.getItem(CLIENT_NUMBER_KEY)||''; if(!num){ showToast('❌ No client number saved — please enter it first','error'); return; }
+      localStorage.setItem(CLIENT_AGREE_KEY, String(Date.now()));
+      // add a zero-priced cart item representing client number (if not already present)
+      const markerId = 'client-number-marker';
+      if(!cart.find(i=>i.id===markerId)){
+        cart.push({ id: markerId, title: `Customer: ${num}`, price: 0, image: 'https://via.placeholder.com/60?text=You', qty: 1, category: 'Customer' });
+        saveCart(); renderCart();
+      }
+      closeAgreementModal(); showToast('✅ Agreement accepted — number added to cart','success'); console.log('✅ Agreement accepted for', num);
+    }
+
+    // payment/agreement button moved into cart UI
+
+
+    // ================ PROMO PANEL (ADMIN-ONLY) ================
+    const PROMOS_KEY = 'brh.promos.v1';
+    let allPromos = [];
+    let currentEditingPromoId = null;
+
+    const savePromos = ()=>{ try{ localStorage.setItem(PROMOS_KEY, JSON.stringify(allPromos)); }catch(e){ console.error('savePromos',e); } };
+    const loadPromos = ()=>{ try{ const v = localStorage.getItem(PROMOS_KEY); if(v){ allPromos = JSON.parse(v); return true; } return false; }catch(e){ console.error('loadPromos',e); return false; } };
+
+    window.addEventListener('DOMContentLoaded', (e)=>{
+      const evt = new Event('DOMContentLoaded-promo');
+      loadPromos();
+      loadShowcaseVideos().then(renderShowcaseVideos);
+      renderPublicPromos();
+      updatePromoBadge();
+      renderPromoList(); // Ensure promos are rendered on page load
+    });
+
+    function updatePromoBadge(){ const b = document.getElementById('promoBadge'); if(b) b.textContent = allPromos.length; }
+
+    window.togglePromoPanel = (forceShow)=>{ 
+      const p = document.getElementById('promoPanel');
+      const isVisible = p.classList.contains('show');
+
+      if (forceShow === true || !isVisible) {
+        if(document.getElementById('promoSearchInput')) document.getElementById('promoSearchInput').value = '';
+        p.classList.remove('closing');
+        p.classList.add('show');
+        renderPromoList();
+      } else {
+        p.classList.add('closing');
+      }};
+
+    function renderPromoList(promosToRender = allPromos){
+      const list = document.getElementById('promoList'); if(!list) return;
+      list.innerHTML = '';
+      if(promosToRender.length === 0){ list.innerHTML = `<div style="padding:20px;text-align:center;color:#999;font-size:13px">${allPromos.length > 0 ? 'No promos match your search.' : 'No promos yet. Add your first one!'}</div>`; return; }
+      promosToRender.forEach(promo=>{
+        const div = document.createElement('div'); div.className = 'promo-item';
+        div.innerHTML = `<img src="${promo.image}" alt="${promo.name}" class="promo-item-img" onerror="this.src='https://via.placeholder.com/60?text=${encodeURIComponent(promo.name)}'">
+        <div class="promo-item-info">
+          <div class="promo-item-title">${promo.name}</div>
+          <div class="promo-item-price">GHS ${promo.price.toFixed(2)}</div>
+          <div style="font-size:11px;color:#999">${promo.desc||'Promo item'}</div>
+        </div>
+        <div class="promo-item-actions">
+          <button class="edit-promo" onclick="openPromoEditModal('${promo.id}')">Edit</button>
+          <button class="delete-promo" onclick="deletePromo('${promo.id}')">Delete</button>
+        </div>`;
+        list.appendChild(div);
+      });
+      updatePromoBadge();
+    }
+
+    function renderPublicPromos() {
+      const panel = document.getElementById('promoShowcasePanel');
+      const grid = document.getElementById('promoGrid');
+      if (!panel || !grid) return;
+
+      if (allPromos.length === 0) {
+        grid.innerHTML = `<div style="padding: 20px; text-align: center; color: #c026d3; font-size: 14px; background: rgba(255,255,255,0.5); border-radius: 8px;">✨ Check back soon for exciting new promotions! ✨</div>`;
+        return;
+      }
+
+      const promoProductList = allPromos.map(p => ({
+        id: `promo-${p.id}`, // Use a prefix to avoid ID conflicts with main products
+        title: p.name,
+        price: p.price,
+        image: p.image,
+        category: 'Promo',
+        detail: p.desc || 'Special Offer'
+      }));
+      
+      // Add promo items to the main product list so addToCart can find them
+      allProducts = allProducts.filter(p => !p.id.startsWith('promo-')); // Clear old promos
+      allProducts.push(...promoProductList);
+      grid.innerHTML = promoProductList.map(p => cardHTML(p)).join('');
+    }
+
+    window.openPromoEditModal = (id)=>{ 
+      const modal = document.getElementById('promoEditModal');
+      if(id){
+        const promo = allPromos.find(p=>p.id === id);
+        if(!promo) return;
+        currentEditingPromoId = id;
+        document.getElementById('promoEditTitle').textContent = 'Edit Promo';
+        document.getElementById('promoEditName').value = promo.name;
+        document.getElementById('promoEditPrice').value = promo.price;
+        document.getElementById('promoEditDesc').value = promo.desc;
+        document.getElementById('promoEditImage').value = 'Image loaded';
+        const prev = document.getElementById('promoEditPreview');
+        const img = document.getElementById('promoEditImg');
+        img.src = promo.image; prev.style.display = 'block';
+        window.selectedPromoImageData = promo.image;
+      } else {
+        currentEditingPromoId = null;
+        document.getElementById('promoEditTitle').textContent = 'Add New Promo';
+        document.getElementById('promoEditName').value = '';
+        document.getElementById('promoEditPrice').value = '';
+        document.getElementById('promoEditDesc').value = '';
+        document.getElementById('promoEditImage').value = '';
+        document.getElementById('promoEditPreview').style.display = 'none';
+        window.selectedPromoImageData = null;
+      }
+      modal.classList.add('show');
+    };
+
+    window.closePromoEditModal = ()=>{ document.getElementById('promoEditModal').classList.remove('show'); };
+
+    window.savePromoEdit = ()=>{
+      const name = document.getElementById('promoEditName').value.trim();
+      const price = parseFloat(document.getElementById('promoEditPrice').value);
+      const desc = document.getElementById('promoEditDesc').value.trim();
+      if(!name){ alert('Please enter promo name'); return; }
+      if(!price || price < 0){ alert('Please enter valid price'); return; }
+      if(!window.selectedPromoImageData){ alert('Please select an image'); return; }
+      if(currentEditingPromoId){
+        const promo = allPromos.find(p=>p.id === currentEditingPromoId);
+        if(promo){ promo.name = name; promo.price = price; promo.desc = desc; promo.image = window.selectedPromoImageData; }
+      } else {
+        allPromos.push({ id: uid(), name, price, desc, image: window.selectedPromoImageData, created: Date.now() });
+      }
+      savePromos(); renderPromoList(); renderPublicPromos(); closePromoEditModal(); showToast(currentEditingPromoId ? '✅ Promo updated!' : '✅ New promo added!','success'); console.log('💾 Promo saved:', {name, price, desc}); updateInfoHubRealtime();
+    };
+
+    window.deletePromo = (id)=>{
+      if(!confirm('Delete this promo? This cannot be undone.')) return;
+      allPromos = allPromos.filter(p=>p.id !== id); updateInfoHubRealtime();
+      savePromos();
+      // Re-render the list based on the current search or the full list
+      const searchInput = document.getElementById('promoSearchInput');
+      if (searchInput && searchInput.value) {
+        filterPromoList();
+      } else {
+        renderPromoList();
+      }
+      renderPublicPromos();
+      showToast('✅ Promo deleted successfully!','success'); console.log('🗑️ Promo deleted:', id);
+    };
+
+    // Promo image drag-drop
+    const promo_dz = document.getElementById('promoDropZone');
+    if(promo_dz){
+      ['dragenter','dragover','dragleave','drop'].forEach(e=>promo_dz.addEventListener(e,preventDefaults));
+      ['dragenter','dragover'].forEach(e=>promo_dz.addEventListener(e,()=>promo_dz.style.background='#dbeafe'));
+      ['dragleave','drop'].forEach(e=>promo_dz.addEventListener(e,()=>promo_dz.style.background='#f0f9ff'));
+      promo_dz.addEventListener('drop',(e)=>{ const f = e.dataTransfer.files; if(f.length>0) handlePromoImage(f[0]); });
+      promo_dz.addEventListener('click',()=>{ const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.onchange=(e)=>handlePromoImage(e.target.files[0]); inp.click(); });
+    }
+
+    // Promo search functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('promoSearchInput');
+      if (searchInput) searchInput.addEventListener('input', filterPromoList);
+    });
+
+    function filterPromoList() {
+      const searchTerm = document.getElementById('promoSearchInput').value.toLowerCase();
+      const filteredPromos = allPromos.filter(promo => 
+        promo.name.toLowerCase().includes(searchTerm) || (promo.desc && promo.desc.toLowerCase().includes(searchTerm))
+      );
+      renderPromoList(filteredPromos);
+    }
+
+    function handlePromoImage(file){
+      if(!file.type.startsWith('image/')){ alert('Please select an image file'); return; }
+      const r = new FileReader(); r.onload=(e)=>{ window.selectedPromoImageData = e.target.result; document.getElementById('promoEditImg').src = e.target.result; document.getElementById('promoEditPreview').style.display = 'block'; }; r.readAsDataURL(file);
+    }
+
+    // ================ VIDEO SHOWCASE (ADMIN-ONLY) ================
+    const VIDEOS_KEY = 'brh.videos.v1'; // For metadata
+    const VIDEO_DB_NAME = 'videoShowcaseDB';
+    const VIDEO_STORE_NAME = 'videoFiles';
+    let videoDB;
+    let showcaseVideos = []; // Array of {id, title}
+
+    function initVideoDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(VIDEO_DB_NAME, 1);
+        request.onerror = (event) => reject('Video DB error: ' + request.error);
+        request.onsuccess = (event) => { videoDB = event.target.result; resolve(videoDB); };
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+            db.createObjectStore(VIDEO_STORE_NAME, { keyPath: 'id' });
+          }
+        };
+      });
+    }
+
+    const saveShowcaseVideos = () => localStorage.setItem(VIDEOS_KEY, JSON.stringify(showcaseVideos));
+    const loadShowcaseVideos = async () => {
+      await initVideoDB();
+      const v = localStorage.getItem(VIDEOS_KEY);
+      if (v) showcaseVideos = JSON.parse(v);
+      return showcaseVideos;
+    };
+
+    async function renderShowcaseVideos() {
+      const panel = document.getElementById('videoShowcasePanel');
+      const grid = document.getElementById('videoGrid');
+      if (!panel || !grid) return;
+      grid.innerHTML = '';
+
+      if (showcaseVideos.length === 0) {
+        panel.classList.remove('visible');
+        return;
+      }
+      panel.classList.add('visible');
+
+      for (const videoMeta of showcaseVideos) {
+        const videoRecord = await getVideoFromDB(videoMeta.id);
+        if (videoRecord && videoRecord.file) {
+          const url = URL.createObjectURL(videoRecord.file);
+          const item = document.createElement('div');
+          item.className = 'video-item';
+          item.innerHTML = `
+            <video src="${url}" controls preload="metadata"></video>
+            <div class="video-item-title">${videoMeta.title}</div>
+          `;
+          grid.appendChild(item);
+        }
+      }
+    }
+
+    function getVideoFromDB(id) {
+      return new Promise((resolve) => {
+        if (!videoDB) return resolve(null);
+        const tx = videoDB.transaction(VIDEO_STORE_NAME, 'readonly');
+        const store = tx.objectStore(VIDEO_STORE_NAME);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    window.toggleVideoMgmtPanel = (show) => {
+      const panel = document.getElementById('videoMgmtPanel');
+      if (show) {
+        panel.classList.add('show');
+        renderVideoMgmtList();
+      } else {
+        panel.classList.remove('show');
+      }
+    };
+
+    function renderVideoMgmtList() {
+      const list = document.getElementById('videoList');
+      list.innerHTML = showcaseVideos.map(v => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding: 6px; border-bottom: 1px solid #eee;">
+          <span>${v.title}</span>
+          <button class="delete-promo" onclick="deleteShowcaseVideo('${v.id}')">Delete</button>
+        </div>`).join('');
+      if (showcaseVideos.length === 0) list.innerHTML = '<p style="text-align:center; color:#888; font-size:13px;">No videos added yet.</p>';
+    }
+
+    async function addShowcaseVideo() {
+      const titleInput = document.getElementById('videoTitleInput');
+      const fileInput = document.getElementById('videoFileInput');
+      const title = titleInput.value.trim();
+      const file = fileInput.files[0];
+
+      if (!title || !file) { showToast('❌ Please provide both a title and a video file.', 'error'); return; }
+      if (!file.type.startsWith('video/')) { showToast('❌ Invalid file type. Please select a video.', 'error'); return; }
+
+      const newVideo = { id: uid(), title: title, file: file };
+      const tx = videoDB.transaction(VIDEO_STORE_NAME, 'readwrite');
+      tx.objectStore(VIDEO_STORE_NAME).put(newVideo);
+      showcaseVideos.push({ id: newVideo.id, title: newVideo.title });
+      saveShowcaseVideos();
+      showToast('✅ Video added successfully!', 'success');
+      titleInput.value = ''; fileInput.value = '';
+      renderVideoMgmtList(); renderShowcaseVideos();
+    }
+
+    async function deleteShowcaseVideo(id) {
+      if (!confirm('Are you sure you want to delete this video?')) return;
+      const tx = videoDB.transaction(VIDEO_STORE_NAME, 'readwrite');
+      tx.objectStore(VIDEO_STORE_NAME).delete(id);
+      showcaseVideos = showcaseVideos.filter(v => v.id !== id);
+      saveShowcaseVideos();
+      showToast('🗑️ Video deleted.', 'success');
+      renderVideoMgmtList(); renderShowcaseVideos();
+    }
+
+    // ================ MEDIA PLAYER (NEW) ================
+    // --- IndexedDB setup for media persistence ---
+    let mediaDB;
+    const DB_NAME = 'mediaPlayerDB';
+    const STORE_NAME = 'mediaFiles';
+    const MEDIA_KEY = 'userMediaFile';
+
+    function initMediaDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onerror = (event) => reject('IndexedDB error: ' + request.error);
+        request.onsuccess = (event) => {
+          mediaDB = event.target.result;
+          resolve(mediaDB);
+        };
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+      });
+    }
+
+    function getMediaFile() {
+      return new Promise((resolve) => {
+        if (!mediaDB) return resolve(null);
+        const transaction = mediaDB.transaction(STORE_NAME, 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(MEDIA_KEY);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function saveMediaFile(file) { if (mediaDB) { const transaction = mediaDB.transaction(STORE_NAME, 'readwrite'); transaction.objectStore(STORE_NAME).put(file, MEDIA_KEY); } }
+    function deleteMediaFile() { if (mediaDB) { const transaction = mediaDB.transaction(STORE_NAME, 'readwrite'); transaction.objectStore(STORE_NAME).delete(MEDIA_KEY); } }
+    // --- End of IndexedDB setup ---
+
+    const mediaPlayerModal = document.getElementById('mediaPlayerModal');
+    const mediaPlayerBtn = document.getElementById('mediaPlayerBtn');
+    const mediaPlayerCloseBtn = document.getElementById('mediaPlayerCloseBtn');
+    const mediaDropZone = document.getElementById('media-drop-zone');
+    const mediaFileInput = document.getElementById('media-file-input');
+    const videoAudioPlayer = document.getElementById('video-audio-player');
+    const resetMediaBtn = document.getElementById('resetMediaBtn');
+
+    const openMediaPlayer = () => mediaPlayerModal.classList.add('show');
+    const closeMediaPlayer = () => {
+      mediaPlayerModal.classList.remove('show');
+      videoAudioPlayer.pause(); // Stop playback when closing
+    };
+
+    mediaPlayerBtn.addEventListener('click', openMediaPlayer);
+    mediaPlayerCloseBtn.addEventListener('click', closeMediaPlayer);
+    mediaPlayerModal.addEventListener('click', (e) => {
+      if (e.target === mediaPlayerModal) closeMediaPlayer(); // Close if clicking on backdrop
+    });
+
+    // --- Event Listeners for Media Player ---
+    mediaDropZone.addEventListener('click', () => mediaFileInput.click());
+    mediaFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) handleMediaFile(file);
+    });
+
+    mediaDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        mediaDropZone.classList.add('drag-over');
+    });
+    mediaDropZone.addEventListener('dragleave', () => mediaDropZone.classList.remove('drag-over'));
+    mediaDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        mediaDropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) handleMediaFile(file);
+    });
+
+    async function handleMediaFile(file) {
+        if (!file.type.startsWith('video/') && !file.type.startsWith('audio/')) {
+            showToast('Invalid file type. Please use video or audio.', 'error');
+            return;
+        }
+        // Save the file to IndexedDB for persistence
+        await saveMediaFile(file);
+
+        const fileURL = URL.createObjectURL(file);
+        videoAudioPlayer.src = fileURL;
+        videoAudioPlayer.classList.add('active');
+        mediaDropZone.classList.add('hidden');
+        resetMediaBtn.style.display = 'inline-block';
+        videoAudioPlayer.play();
+        showToast('✅ Media loaded and saved for next time!', 'success');
+    }
+
+    resetMediaBtn.addEventListener('click', () => {
+        // Also delete the file from IndexedDB
+        deleteMediaFile();
+
+        videoAudioPlayer.pause();
+        videoAudioPlayer.src = '';
+        videoAudioPlayer.classList.remove('active');
+        mediaDropZone.classList.remove('hidden');
+        resetMediaBtn.style.display = 'none';
+        mediaFileInput.value = ''; // Clear the file input
+        showToast('🗑️ Media unloaded.', 'info');
+    });
+
+    // On page load, initialize DB and check for a saved media file
+    window.addEventListener('DOMContentLoaded', async () => {
+        await initMediaDB();
+        await initVideoDB();
+        const savedFile = await getMediaFile();
+        if (savedFile) handleMediaFile(savedFile);
+    });
+  </script>
+  <script>
+    // ================ INFO HUB PANEL ================
+    function updateInfoHubRealtime() {
+      const panel = document.getElementById('infoHubPanel');
+      // Only re-render the content if the panel is currently visible
+      if (panel && panel.classList.contains('show')) {
+        renderInfoHubContent();
+      }
+    }
+    function toggleInfoHubPanel(show) {
+      const panel = document.getElementById('infoHubPanel');
+      if (show) {
+        renderInfoHubContent();
+        panel.classList.add('show');
+      } else {
+        panel.classList.remove('show');
+      }
+    }
+
+    function renderInfoHubContent() {
+      const content = document.getElementById('infoHubContent');
+      const categories = [...new Set(allProducts.map(p => p.category))];
+      const cartItemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      const cartTotalValue = cart.reduce((sum, item) => sum + (item.price * item.qty), 0).toFixed(2);
+      const promoCount = allPromos.length;
+
+      content.innerHTML = `
+        <div class="info-widget"><div class="info-widget-value">${allProducts.length}</div><div class="info-widget-label">Total Products</div></div>
+        <div class="info-widget"><div class="info-widget-value">${categories.length}</div><div class="info-widget-label">Categories</div></div>
+        <div class="info-widget"><div class="info-widget-value">${cartItemCount}</div><div class="info-widget-label">Items in Cart</div></div>
+        <div class="info-widget"><div class="info-widget-value" style="font-size: 20px;">GHS ${cartTotalValue}</div><div class="info-widget-label">Cart Value</div></div>
+        <div class="info-widget"><div class="info-widget-value">${promoCount}</div><div class="info-widget-label">Active Promos</div></div>
+        <div class="info-widget"><div class="info-widget-value" style="color: #10b981;">Online</div><div class="info-widget-label">Store Status</div></div>
+      `;
+    }
+  </script>
+
+  <!-- The fireworks-js library from a CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.7/dist/index.umd.js"></script>
+
+  <!-- The script to start the fireworks -->
+  <script>
+      // Get the container element
+      const container = document.getElementById('fireworks-container');
+      
+      // Create a new Fireworks instance
+      const fireworks = new Fireworks.default(container, {
+          rocketsPoint: {
+              min: 50,
+              max: 50
+          },
+          hue: {
+              min: 0,
+              max: 360
+          },
+          delay: {
+              min: 0.015,
+              max: 0.03
+          },
+          speed: 2,
+          acceleration: 1.05,
+          friction: 0.97,
+          gravity: 1.5,
+          particles: 90,
+          traceSpeed: 3,
+          explosion: 5,
+          intensity: 30,
+          flickering: 50,
+          lineStyle: 'round'
+      });
+
+      // Start the fireworks
+      fireworks.start();
+  </script>
+</body>
+</html>
